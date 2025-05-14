@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+*.pyo
+.env
+db.sqlite3
+/venv/
+/node_modules/
+*.log
+*.pot
+*.pyc
+*.pyo
+*.swp
+*.swo
+.DS_Store
+.idea/
