@@ -6,8 +6,8 @@ from .models import Candidate,AuthUser
 @admin.register(Candidate)
 class CandidateAdmin(admin.ModelAdmin):
     list_display = (
-        'first_name', 'last_name', 'email',
-        'date_of_birth', 'qualification', 'interested_area'
+        'first_name', 'last_name', 'phone','email',
+         'qualification', 'interested_area','status','remarks'
     )
 
 @admin.register(AuthUser)

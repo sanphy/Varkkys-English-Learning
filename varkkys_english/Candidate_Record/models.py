@@ -22,10 +22,17 @@ class AuthUser(models.Model):
     def __str__(self):
         return self.username
 
+
 class Candidate(models.Model):
+    STATUS_CHOICES = [
+        ('interested', 'Interested'),
+        ('not-interested', 'Not-interested'),
+        ('followup', 'followup'),
+        ('rejected', 'Rejected'),
+    ]
+
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
-    email = models.EmailField(unique=True)
     phone = models.CharField(
         max_length=15,
         primary_key=True,
@@ -35,16 +42,23 @@ class Candidate(models.Model):
         )],
         help_text="Unique phone number (12 digits)."
     )
+    email = models.EmailField(unique=True)
     address = models.TextField(blank=True)
-    date_of_birth = models.DateField(blank=True, null=True)
     age = models.PositiveIntegerField(blank=True, null=True)
     qualification = models.CharField(max_length=255, blank=True)
     interested_area = models.CharField(
-                           max_length=255,
-                           blank=True,
-                           help_text="E.g. Data Science, Web Dev, AI"
-                       )
+        max_length=255,
+        blank=True,
+        help_text="E.g. Data Science, Web Dev, AI"
+    )
+
+    current_role = models.CharField(max_length=100, blank=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='interested')
+    remarks = models.TextField(blank=True)
+    requirements_of_candidate = models.TextField(blank=True)
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
     def __str__(self):
         return f"{self.first_name} {self.last_name}"

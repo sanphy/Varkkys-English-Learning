@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "Candidate_Record",
-    'rest_framework',
+    "rest_framework",
 
 ]
 
