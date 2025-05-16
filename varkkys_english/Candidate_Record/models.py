@@ -15,26 +15,22 @@ class Candidate(models.Model):
     last_name = models.CharField(max_length=100)
     phone = models.CharField(
         max_length=15,
-        primary_key=True,
-        validators=[RegexValidator(
-            regex=r'^[6-9]\d{11}$',
-            message="Phone number must be exactly 12 digits and start with 6, 7, 8, or 9."
-        )],
-        help_text="Unique phone number (12 digits)."
+        primary_key=True
     )
-    email = models.EmailField(unique=True)
-    address = models.TextField(blank=True)
+    email = models.EmailField(blank=True,null=True)
+    address = models.TextField(blank=True,null=True)
     age = models.PositiveIntegerField(blank=True, null=True)
-    qualification = models.CharField(max_length=255, blank=True)
+    qualification = models.CharField(max_length=255, blank=True,null=True)
     interested_area = models.CharField(
         max_length=255,
         blank=True,
+        null=True,
         help_text="E.g. Data Science, Web Dev, AI"
     )
-    current_role = models.CharField(max_length=100, blank=True)
+    current_role = models.CharField(max_length=100, blank=True,null=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='interested')
-    remarks = models.TextField(blank=True)
-    requirements_of_candidate = models.TextField(blank=True)
+    remarks = models.TextField(blank=True,null=True)
+    requirements_of_candidate = models.TextField(blank=True,null=True)
     assigned_to = models.ForeignKey(
         User,  # using Django’s User model
         null=True,
