@@ -1,33 +1,13 @@
 from django.db import models
 from django.core.validators import RegexValidator
-from django.contrib.auth.hashers import make_password, check_password
-
-
-class AuthUser(models.Model):
-    username = models.CharField(max_length=100, unique=True)
-    password = models.CharField(max_length=128)  # hashed password
-
-    def set_password(self, raw_password):
-        self.password = make_password(raw_password)
-
-    def check_password(self, raw_password):
-        return check_password(raw_password, self.password)
-
-    def save(self, *args, **kwargs):
-        # Hash the password only if it's not already hashed
-        if not self.password.startswith('pbkdf2_'):
-            self.password = make_password(self.password)
-        super().save(*args, **kwargs)
-
-    def __str__(self):
-        return self.username
+from django.contrib.auth.models import User
 
 
 class Candidate(models.Model):
     STATUS_CHOICES = [
         ('interested', 'Interested'),
         ('not-interested', 'Not-interested'),
-        ('followup', 'followup'),
+        ('followup', 'Followup'),
         ('rejected', 'Rejected'),
     ]
 
@@ -51,13 +31,17 @@ class Candidate(models.Model):
         blank=True,
         help_text="E.g. Data Science, Web Dev, AI"
     )
-
     current_role = models.CharField(max_length=100, blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='interested')
     remarks = models.TextField(blank=True)
     requirements_of_candidate = models.TextField(blank=True)
-
-    created_at = models.DateTimeField(auto_now_add=True)
+    assigned_to = models.ForeignKey(
+        User,  # using Django’s User model
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        limit_choices_to={'is_staff': True},)  # directly use role field on User
+        # filter only staff    created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):

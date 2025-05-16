@@ -9,6 +9,14 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
+}
 
 from pathlib import Path
 
@@ -39,6 +47,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "Candidate_Record",
     "rest_framework",
+    "rest_framework.authtoken",
 
 ]
 
