@@ -6,11 +6,26 @@ from django.contrib.auth.models import User
 class CandidateSerializer(serializers.ModelSerializer):
     assigned_to = serializers.SlugRelatedField(
         slug_field='username',
-        queryset=User.objects.all(),
+        queryset=User.objects.filter(is_staff=True),
         allow_null=True,
         required=False,
     )
 
     class Meta:
         model = Candidate
-        fields = '__all__'
+        fields = [
+            'phone',
+            'first_name',
+            'last_name',
+            'email',
+            'address',
+            'age',
+            'qualification',
+            'interested_area',
+            'current_role',
+            'status',
+            'remarks',
+            'requirements_of_candidate',
+            'assigned_to',
+            'updated_at',
+        ]
