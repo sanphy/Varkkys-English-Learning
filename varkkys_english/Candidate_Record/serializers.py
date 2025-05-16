@@ -14,9 +14,10 @@ class CandidateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Candidate
         fields = [
-            'phone',
+
             'first_name',
             'last_name',
+            'phone',
             'email',
             'address',
             'age',
