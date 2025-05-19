@@ -40,6 +40,7 @@ def list_candidates(request):
         candidates = Candidate.objects.filter(assigned_to=user)
 
     serializer = CandidateSerializer(candidates, many=True)
+    print(serializer,"serializerrr")
     return Response(serializer.data)
 
 
@@ -55,7 +56,7 @@ def candidate_detail(request, phone):
     user = request.user
 
     if not user.is_superuser and candidate.assigned_to != user:
-        return Response({'error': 'Permission denied'}, status=status.HTTP_403_FORBIDDEN)
+        return Response({'error': 'Unauthorized Access'}, status=status.HTTP_403_FORBIDDEN)
 
     if request.method == 'POST':
         serializer = CandidateSerializer(candidate)

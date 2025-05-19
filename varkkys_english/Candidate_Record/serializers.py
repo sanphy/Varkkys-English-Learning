@@ -1,9 +1,11 @@
 from rest_framework import serializers
 from .models import Candidate
 from django.contrib.auth.models import User
+import re
 
 
 class CandidateSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField(read_only=True)  # for GET only
     assigned_to = serializers.SlugRelatedField(
         slug_field='username',
         queryset=User.objects.filter(is_staff=True),
@@ -15,7 +17,8 @@ class CandidateSerializer(serializers.ModelSerializer):
         model = Candidate
         fields = [
 
-            'first_name',
+            'name',
+            'first_name',  # ✅ Add this
             'last_name',
             'phone',
             'email',
@@ -30,3 +33,30 @@ class CandidateSerializer(serializers.ModelSerializer):
             'assigned_to',
             'audio_record'
         ]
+
+    def validate_phone(self, value):
+        """
+        Clean and validate phone number:
+        - Remove spaces, hyphens, parentheses
+        - Allow optional '+' at the start
+        - Ensure max 12 digits after optional '+'
+        """
+        # Remove unwanted characters
+        cleaned = value.replace(" ", "").replace("-", "").replace("(", "").replace(")", "")
+
+        # Handle optional '+' at the beginning
+        if cleaned.startswith('+'):
+            digits = cleaned[1:]
+        else:
+            digits = cleaned
+
+        if not digits.isdigit():
+            raise serializers.ValidationError("Phone number must contain only digits after optional '+'.")
+
+        if len(digits) > 12:
+            raise serializers.ValidationError("Phone number must be up to 12 digits (excluding optional '+').")
+
+        return cleaned
+
+    def get_name(self, obj):
+        return f"{obj.first_name} {obj.last_name}".strip()
