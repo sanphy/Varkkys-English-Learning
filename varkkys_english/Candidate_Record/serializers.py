@@ -28,4 +28,5 @@ class CandidateSerializer(serializers.ModelSerializer):
             'remarks',
             'requirements_of_candidate',
             'assigned_to',
+            'audio_record'
         ]
