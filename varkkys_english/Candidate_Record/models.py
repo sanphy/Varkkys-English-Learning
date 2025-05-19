@@ -38,6 +38,7 @@ class Candidate(models.Model):
         on_delete=models.SET_NULL,
         limit_choices_to={'is_staff': True},)  # directly use role field on User
         # filter only staff    created_at = models.DateTimeField(auto_now_add=True)
+    audio_record = models.FileField(upload_to='audio_records/', blank=True, null=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
