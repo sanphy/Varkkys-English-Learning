@@ -1,11 +1,9 @@
 from rest_framework import serializers
 from .models import Candidate
 from django.contrib.auth.models import User
-import re
 
 
 class CandidateSerializer(serializers.ModelSerializer):
-    name = serializers.SerializerMethodField(read_only=True)  # for GET only
     assigned_to = serializers.SlugRelatedField(
         slug_field='username',
         queryset=User.objects.filter(is_staff=True),
@@ -17,8 +15,7 @@ class CandidateSerializer(serializers.ModelSerializer):
         model = Candidate
         fields = [
 
-            'name',
-            'first_name',  # ✅ Add this
+            'first_name',
             'last_name',
             'phone',
             'email',
@@ -57,6 +54,3 @@ class CandidateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Phone number must be up to 12 digits (excluding optional '+').")
 
         return cleaned
-
-    def get_name(self, obj):
-        return f"{obj.first_name} {obj.last_name}".strip()
