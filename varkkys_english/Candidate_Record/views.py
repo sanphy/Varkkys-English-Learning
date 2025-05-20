@@ -40,11 +40,10 @@ def list_candidates(request):
         candidates = Candidate.objects.filter(assigned_to=user)
 
     serializer = CandidateSerializer(candidates, many=True)
-    print(serializer,"serializerrr")
     return Response(serializer.data)
 
 
-@api_view(['POST', 'PATCH'])
+@api_view(['PATCH'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def candidate_detail(request, phone):
@@ -56,31 +55,29 @@ def candidate_detail(request, phone):
     user = request.user
 
     if not user.is_superuser and candidate.assigned_to != user:
+
         return Response({'error': 'Unauthorized Access'}, status=status.HTTP_403_FORBIDDEN)
 
-    if request.method == 'POST':
-        serializer = CandidateSerializer(candidate)
-        return Response(serializer.data)
-
-    elif request.method == 'PATCH':
+    if request.method == 'PATCH':
         serializer = CandidateSerializer(candidate, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    return Response({'error': 'unsupported method'}, status=status.HTTP_403_FORBIDDEN)
 
 
-@api_view(['PUT'])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
-def candidate_update(request, phone):
-    try:
-        candidate = Candidate.objects.get(phone=phone)
-    except Candidate.DoesNotExist:
-        return Response({'error': 'Candidate not found'}, status=status.HTTP_404_NOT_FOUND)
-
-    serializer = CandidateSerializer(candidate, data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+# @api_view(['PUT'])
+# @authentication_classes([TokenAuthentication])
+# @permission_classes([IsAuthenticated])
+# def candidate_update(request, phone):
+#     try:
+#         candidate = Candidate.objects.get(phone=phone)
+#     except Candidate.DoesNotExist:
+#         return Response({'error': 'Candidate not found'}, status=status.HTTP_404_NOT_FOUND)
+#
+#     serializer = CandidateSerializer(candidate, data=request.data)
+#     if serializer.is_valid():
+#         serializer.save()
+#         return Response(serializer.data)
+#     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

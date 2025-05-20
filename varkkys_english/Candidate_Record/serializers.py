@@ -28,7 +28,8 @@ class CandidateSerializer(serializers.ModelSerializer):
             'remarks',
             'requirements_of_candidate',
             'assigned_to',
-            'audio_record'
+            'audio_record',
+            "lead_type"
         ]
 
     def validate_phone(self, value):
