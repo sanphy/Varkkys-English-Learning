@@ -39,6 +39,7 @@ class CandidateSerializer(serializers.ModelSerializer):
         - Allow optional '+' at the start
         - Ensure max 12 digits after optional '+'
         """
+
         # Remove unwanted characters
         cleaned = value.replace(" ", "").replace("-", "").replace("(", "").replace(")", "")
 

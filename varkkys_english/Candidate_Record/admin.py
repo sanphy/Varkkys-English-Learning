@@ -54,10 +54,14 @@ class CandidateAdmin(admin.ModelAdmin):
 
                 for _, row in df.iterrows():
                     cleaned_data = clean_row(row)
-                    phone = cleaned_data.get('phone')
-                    if not phone:
+                    raw_phone = cleaned_data.get('phone')
+                    if not raw_phone:
                         continue
-
+                    try:
+                        phone = validate_and_clean_phone(raw_phone)
+                    except ValueError as e:
+                        self.message_user(request, f"Skipping row due to phone error: {e}", level=messages.WARNING)
+                        continue
                     assigned_username = cleaned_data.get('assigned_to')
                     assigned_user = None
                     if assigned_username:
@@ -95,6 +99,31 @@ class CandidateAdmin(admin.ModelAdmin):
             'opts': self.model._meta,
         }
         return render(request, 'admin/upload_excel.html', context)
+
+def validate_and_clean_phone(value):
+    """
+    Validates and cleans phone numbers:
+    - Allows optional '+' at the start
+    - Removes spaces, hyphens, and parentheses
+    - Ensures digits only (after optional '+')
+    - Limits digits to max 12
+    Returns the cleaned phone or raises ValueError.
+    """
+    if not value:
+        raise ValueError("Phone number is missing.")
+
+    cleaned = str(value).replace(" ", "").replace("-", "").replace("(", "").replace(")", "")
+    if cleaned.startswith("+"):
+        digits = cleaned[1:]
+    else:
+        digits = cleaned
+
+    if not digits.isdigit():
+        raise ValueError("Phone number must contain only digits after optional '+'.")
+    if len(digits) > 12:
+        raise ValueError("Phone number must be up to 12 digits (excluding optional '+').")
+
+    return cleaned
 
 class CustomUserAdmin(UserAdmin):
     list_display = ('username', 'email', 'is_staff', 'is_superuser', 'is_active')
