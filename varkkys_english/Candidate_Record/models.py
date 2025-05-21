@@ -42,16 +42,18 @@ class Candidate(models.Model):
         on_delete=models.SET_NULL,
         limit_choices_to={'is_staff': True},)  # directly use role field on User
         # filter only staff    created_at = models.DateTimeField(auto_now_add=True)
-    audio_record = models.FileField(upload_to='audio_records/', blank=True, null=True)
+    # audio_record = models.FileField(upload_to='audio_records/', blank=True, null=True)
     lead_type = models.CharField(max_length=20, choices=STATUS_CHOICES_LEAD, default='outbound_lead')
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
+
 # models.py
 class CandidateAudioRecord(models.Model):
     candidate = models.ForeignKey(Candidate, related_name='audio_records', on_delete=models.CASCADE)
+    original_filename = models.CharField(max_length=255,blank=True,null=True)  # NEW FIELD to store original file name
     audio_file = models.FileField(upload_to='audio_records/')
     uploaded_at = models.DateTimeField(auto_now_add=True)
 

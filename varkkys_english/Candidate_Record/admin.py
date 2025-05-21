@@ -16,7 +16,7 @@ admin.site.unregister(User)
 class CandidateAdmin(admin.ModelAdmin):
     list_display = (
         'first_name', 'last_name', 'phone','email',
-         'qualification', 'interested_area','status','remarks','assigned_to','audio_record',"lead_type"
+         'qualification', 'interested_area','status','remarks','assigned_to',"lead_type"
     )
     change_list_template = "admin/candidate_changelist.html"  # Custom template for extra button (optional)
     list_filter = ["assigned_to","lead_type"]

@@ -60,13 +60,21 @@ def candidate_detail(request, phone):
     if not user.is_superuser and candidate.assigned_to != user:
         return Response({'error': 'Unauthorized Access'}, status=status.HTTP_403_FORBIDDEN)
 
-    # Handle audio upload separately
-    audio_files = request.FILES.getlist('audio_record')  # Get all uploaded files with the same key
-    for audio_file in audio_files:
-        if CandidateAudioRecord.objects.filter(candidate=candidate, audio_file=f'audio_records/{audio_file.name}').exists():
-            continue  # Skip if already exists
+    from os.path import basename
 
-        CandidateAudioRecord.objects.create(candidate=candidate, audio_file=audio_file)
+    audio_files = request.FILES.getlist('audio_record')  # get multiple files
+
+    for audio_file in audio_files:
+        # Check if the candidate already has an audio with this original filename
+        if CandidateAudioRecord.objects.filter(candidate=candidate, original_filename=audio_file.name).exists():
+            continue  # skip duplicates
+
+        # Save new audio file
+        CandidateAudioRecord.objects.create(
+            candidate=candidate,
+            audio_file=audio_file,
+            original_filename=audio_file.name  # save original filename explicitly
+        )
 
     # Update other candidate fields
     serializer = CandidateSerializer(candidate, data=request.data, partial=True)
