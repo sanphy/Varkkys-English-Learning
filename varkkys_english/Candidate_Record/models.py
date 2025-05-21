@@ -48,3 +48,12 @@ class Candidate(models.Model):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
+
+# models.py
+class CandidateAudioRecord(models.Model):
+    candidate = models.ForeignKey(Candidate, related_name='audio_records', on_delete=models.CASCADE)
+    audio_file = models.FileField(upload_to='audio_records/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Audio for {self.candidate.phone} - {self.audio_file.name}"

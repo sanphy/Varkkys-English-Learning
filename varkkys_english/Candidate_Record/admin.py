@@ -6,7 +6,7 @@ import pandas as pd
 from django.contrib import admin, messages
 from django.urls import path
 from django.shortcuts import render, redirect
-from .models import Candidate
+from .models import Candidate,CandidateAudioRecord
 from .forms import ExcelUploadForm
 
 
@@ -131,5 +131,9 @@ class CustomUserAdmin(UserAdmin):
 
 admin.site.register(User, CustomUserAdmin)
 
-
+@admin.register(CandidateAudioRecord)
+class CandidateAudioRecordAdmin(admin.ModelAdmin):
+    list_display = (
+        'candidate','audio_file'
+    )
 

@@ -1,6 +1,13 @@
 from rest_framework import serializers
-from .models import Candidate
+from .models import Candidate,CandidateAudioRecord
 from django.contrib.auth.models import User
+
+# serializers.py
+class CandidateAudioRecordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CandidateAudioRecord
+        fields = ['audio_file', 'uploaded_at']
+
 
 
 class CandidateSerializer(serializers.ModelSerializer):
@@ -10,7 +17,7 @@ class CandidateSerializer(serializers.ModelSerializer):
         allow_null=True,
         required=False,
     )
-
+    audio_records = CandidateAudioRecordSerializer(many=True, read_only=True)
     class Meta:
         model = Candidate
         fields = [
@@ -28,7 +35,7 @@ class CandidateSerializer(serializers.ModelSerializer):
             'remarks',
             'requirements_of_candidate',
             'assigned_to',
-            'audio_record',
+            'audio_records',
             "lead_type"
         ]
 
@@ -56,3 +63,4 @@ class CandidateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Phone number must be up to 12 digits (excluding optional '+').")
 
         return cleaned
+
