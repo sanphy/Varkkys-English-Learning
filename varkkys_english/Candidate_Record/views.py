@@ -45,11 +45,10 @@ def list_candidates(request):
     return Response(serializer.data)
 
 
-# views.py
 @api_view(['PATCH'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
-@parser_classes([MultiPartParser, FormParser])  # needed for file upload
+@parser_classes([MultiPartParser, FormParser])  # for form-data with files
 def candidate_detail(request, phone):
     try:
         candidate = Candidate.objects.get(phone=phone)
@@ -60,28 +59,27 @@ def candidate_detail(request, phone):
     if not user.is_superuser and candidate.assigned_to != user:
         return Response({'error': 'Unauthorized Access'}, status=status.HTTP_403_FORBIDDEN)
 
-    from os.path import basename
-
-    audio_files = request.FILES.getlist('audio_record')  # get multiple files
+    # Handle audio file uploads
+    audio_files = request.FILES.getlist('audio_record')
 
     for audio_file in audio_files:
-        # Check if the candidate already has an audio with this original filename
         if CandidateAudioRecord.objects.filter(candidate=candidate, original_filename=audio_file.name).exists():
-            continue  # skip duplicates
+            continue  # skip duplicate by original filename
 
-        # Save new audio file
         CandidateAudioRecord.objects.create(
             candidate=candidate,
             audio_file=audio_file,
-            original_filename=audio_file.name  # save original filename explicitly
+            original_filename=audio_file.name
         )
 
-    # Update other candidate fields
+    # Update candidate fields
     serializer = CandidateSerializer(candidate, data=request.data, partial=True)
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data)
+
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 # @api_view(['PUT'])
 # @authentication_classes([TokenAuthentication])
