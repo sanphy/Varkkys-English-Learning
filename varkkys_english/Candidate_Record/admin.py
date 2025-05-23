@@ -136,4 +136,4 @@ class CandidateAudioRecordAdmin(admin.ModelAdmin):
     list_display = (
         'candidate','audio_file'
     )
-
+    list_filter = ["candidate"]
