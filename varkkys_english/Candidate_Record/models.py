@@ -59,3 +59,10 @@ class CandidateAudioRecord(models.Model):
 
     def __str__(self):
         return f"Audio for {self.candidate.phone} - {self.audio_file.name}"
+
+class VlmModel(models.Model):
+    version_no = models.IntegerField()
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Version {self.version_no}"

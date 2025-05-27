@@ -6,7 +6,7 @@ import pandas as pd
 from django.contrib import admin, messages
 from django.urls import path
 from django.shortcuts import render, redirect
-from .models import Candidate,CandidateAudioRecord
+from .models import Candidate,CandidateAudioRecord,VlmModel
 from .forms import ExcelUploadForm
 
 
@@ -137,3 +137,10 @@ class CandidateAudioRecordAdmin(admin.ModelAdmin):
         'candidate','audio_file'
     )
     list_filter = ["candidate"]
+
+@admin.register(VlmModel)
+class VlmModelAdmin(admin.ModelAdmin):
+    list_display = (
+        'version_no',
+    )
+    list_filter = ["version_no"]

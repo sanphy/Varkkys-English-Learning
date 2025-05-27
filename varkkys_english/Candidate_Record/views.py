@@ -6,7 +6,7 @@ from rest_framework import status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.models import Token
-from .models import Candidate,CandidateAudioRecord
+from .models import Candidate,CandidateAudioRecord,VlmModel
 from .serializers import CandidateSerializer
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.decorators import parser_classes
@@ -80,6 +80,11 @@ def candidate_detail(request, phone):
 
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['GET'])
+def get_version(request):
+    version_obj = VlmModel.objects.last()
+    return Response({'version_no': version_obj.version_no if version_obj else 0})
+
 
 # @api_view(['PUT'])
 # @authentication_classes([TokenAuthentication])
@@ -112,3 +117,4 @@ def candidate_detail(request, phone):
 #     audio_record.save()
 #
 #     return Response({'message': 'Audio uploaded successfully'}, status=status.HTTP_201_CREATED)
+

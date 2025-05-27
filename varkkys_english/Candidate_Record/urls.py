@@ -9,7 +9,7 @@ urlpatterns = [
     path('api/candidate/<str:phone>/', views.candidate_detail), #patch
     # path('api/candidate/update/<str:phone>/', views.candidate_update),
     # path('api/upload_audio/<str:phone>/', views.upload_audio_record, name='upload_audio_record'),
-
+    path('api/version/', views.get_version, name='get_version'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
