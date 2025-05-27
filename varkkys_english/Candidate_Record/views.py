@@ -82,9 +82,26 @@ def candidate_detail(request, phone):
 
 @api_view(['GET'])
 def get_version(request):
-    version_obj = VlmModel.objects.last()
-    return Response({'version_no': version_obj.version_no if version_obj else 0})
+    token_version = request.query_params.get('version_no')
 
+    if not token_version:
+        return Response({'status': 'fail', 'message': 'No version provided'}, status=400)
+
+    try:
+        token_version = int(token_version)
+    except ValueError:
+        return Response({'status': 'fail', 'message': 'Invalid version format'}, status=400)
+
+    # Get latest version by updated_at
+    latest = VlmModel.objects.order_by('-updated_at').first()
+
+    if not latest:
+        return Response({'status': 'fail', 'message': 'No version in backend'}, status=500)
+
+    if token_version == latest.version_no:
+        return Response({'status': 'success', 'match': True})
+    else:
+        return Response({'status': 'fail', 'match': False, 'latest_version': latest.version_no})
 
 # @api_view(['PUT'])
 # @authentication_classes([TokenAuthentication])
